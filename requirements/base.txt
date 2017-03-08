@@ -2,18 +2,21 @@
 # django-sendfile
 # django-widget-tweaks
 # django-stdimage
-psycopg2
 django-compressor
+django-environ
+django-filter
 django-model-utils
 django-registration-redux
 django-silk
 Django>=1.10,<1.11
+djangorestframework
 ipython
+markdown
+psycopg2
+pytest-django
 python-memcached
 pytz
 raven
 Sphinx
 sphinx-rtd-theme
-pytest-django
-django-environ
 uwsgi

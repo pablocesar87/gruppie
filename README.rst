@@ -12,4 +12,4 @@ To start project using:
 3. Run docker-compose -f dev.yml build to build the project.
 4. Run docker-compose -f dev.yml run django python manage.py migrate to create the necessary first migration.
 5. Run docker-compose -f dev.yml up to start the server in your local machine.
-6.No remote server support yet. 
+6. No remote server support yet. 
