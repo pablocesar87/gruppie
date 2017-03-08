@@ -1,5 +1,5 @@
 =========================
-Django project template
+Gruppie Project
 =========================
 
 ***************
@@ -7,6 +7,9 @@ Installation
 ***************
 To start project using:
 
-1. Add your public key to deployment keys.
-2. Run commmand ``django-admin startproject PROJECTNAME --template=https://bitbucket.org/merixstudio/django-project-template/get/tip.zip --extension=ini``. You can use either Django installation from project's virtualenv or global installation.
-3. Uncomment ``Django project template`` section in hgignore.
+1. Install docker-engine and docker-compose in your machine to the last version.
+2. Change your configuration in a locally created .env file, and change dev.yml for locally configuration.
+3. Run docker-compose -f dev.yml build to build the project.
+4. Run docker-compose -f dev.yml run django python manage.py migrate to create the necessary first migration.
+5. Run docker-compose -f dev.yml up to start the server in your local machine.
+6.No remote server support yet. 
