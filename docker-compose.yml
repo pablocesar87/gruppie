@@ -1,0 +1,67 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    networks:
+      - default
+  web:
+    build:
+      context: .
+      dockerfile: ./compose/nginx/Dockerfile
+    image: ${REPOSITORY_URL}/web:${BUILD_NUMBER}
+    deploy:
+      labels:
+        - "traefik.port=80"
+        - "traefik.docker.network=traefik-net"
+        - "traefik.frontend.rule=Host:${DEPLOY_HOSTNAME}"
+    volumes:
+      - static:/static:ro
+      - media:/media:ro
+    networks:
+      - default
+      - traefik-net
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    image: ${REPOSITORY_URL}/django:${BUILD_NUMBER}
+    environment:
+      ALLOWED_HOSTS: ${DEPLOY_HOSTNAME}
+    env_file: ${COMPOSE_ENV_FILE}
+    volumes:
+      - static:/static
+      - media:/media
+    depends_on:
+      - postgres
+    command: uwsgi --ini=./compose/django/uwsgi.ini
+    networks:
+      - default
+  bootstrap:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    image: ${REPOSITORY_URL}/django:${BUILD_NUMBER}
+    environment:
+      ALLOWED_HOSTS: ${DEPLOY_HOSTNAME}
+    env_file: ${COMPOSE_ENV_FILE}
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - static:/static
+      - media:/media
+    depends_on:
+      - postgres
+    command: python manage.py bootstrap
+    networks:
+      - default
+volumes:
+  static:
+    driver: local
+  media:
+    driver: local
+networks:
+  networks:
+    driver: overlay
+  traefik-net:
+    external: true
