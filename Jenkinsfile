@@ -6,6 +6,6 @@ node {
         checkout scm
     }
 
-    def stack = new gd.mrx.ci.DockerStack(this, 'citest')
+    def stack = new gd.mrx.ci.DockerStack(this, 'gruppie')
     stack.execute()
 }
