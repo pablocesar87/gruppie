@@ -39,6 +39,7 @@ INSTALLED_APPS = (
 
     'gruppie',
     'auth_ex',
+    'bands'
 )
 
 AUTH_USER_MODEL = 'auth_ex.User'
