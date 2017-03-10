@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from stdimage.utils import UploadToAutoSlugClassNameDir
 from stdimage.models import StdImageField
+from django.core.validators import MaxValueValidator
 
 
 class Genre(models.Model):
@@ -19,9 +20,17 @@ class Genre(models.Model):
 class Song(models.Model):
     title = models.CharField(_('title'), max_length=200)
     lyrics = models.TextField(_('lyrics'), blank=True)
+    length_minutes = models.PositiveIntegerField(
+        _('minutes lentgh'), null=True)
+    length_seconds = models.PositiveIntegerField(
+        _('seconds lentgh'), null=True, validators=[MaxValueValidator(59)])
 
     def __str__(self):
         return self.name
+
+    def get_full_length(self):
+        return '{}:{}'.format(str(self.length_minutes),
+                              str(self.length_seconds))
 
     class Meta:
         verbose_name = _('song')
@@ -33,9 +42,17 @@ class Album(models.Model):
     description = models.TextField(_('description'), blank=True)
     image = StdImageField(_('image'), upload_to=UploadToAutoSlugClassNameDir(
         populate_from='title'), null=True)
+    songs = models.ForeignKey(Song, on_delete=models.CASCADE,
+                              related_name='album_song',
+                              verbose_name=_('songs'), null=True)
 
     def __str__(self):
         return self.name
+
+    def get_album_length(self):
+        # TODO: Sum of the songs lengths taking
+        # into account the seconds and adding a minute every 60
+        pass
 
     class Meta:
         verbose_name = _('album')
