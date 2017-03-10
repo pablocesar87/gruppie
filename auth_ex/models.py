@@ -4,6 +4,8 @@ from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
+from stdimage.utils import UploadToAutoSlugClassNameDir
+from stdimage.models import StdImageField
 
 
 class UserManager(BaseUserManager):
@@ -55,6 +57,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             'unique': _("A user with that email already exists."),
         },
     )
+    username = models.CharField(
+        _('username'),
+        max_length=30,
+        unique=True,
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -70,11 +80,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    avatar = StdImageField(_('avatar'), upload_to=UploadToAutoSlugClassNameDir(
+        populate_from='username'), null=True)
+    bands = models.ManyToManyField(
+        'bands.Band', verbose_name=_('Bands'), blank=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
     class Meta:
         verbose_name = _('user')

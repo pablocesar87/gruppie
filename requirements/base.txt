@@ -1,7 +1,7 @@
 # django-rosetta
 # django-sendfile
 # django-widget-tweaks
-# django-stdimage
+django-stdimage
 django-compressor
 django-environ
 django-filter

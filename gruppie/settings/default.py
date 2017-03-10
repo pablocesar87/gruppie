@@ -31,7 +31,7 @@ INSTALLED_APPS = (
     # 'mailqueue',
     # 'rosetta',
     # 'widget_tweaks',
-    # 'stdimage',
+    'stdimage',
     # 'sendfile',
     'debug_toolbar',
     'registration',
