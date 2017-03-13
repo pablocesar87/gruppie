@@ -99,6 +99,8 @@ WSGI_APPLICATION = 'gruppie.wsgi.application'
 USE_TZ = True
 TIME_ZONE = 'UTC'
 
+TIME_INPUT_FORMATS = ('%M:%S', )
+
 # --- LANGUAGES ---
 USE_I18N = True
 USE_L10N = True

@@ -20,17 +20,10 @@ class Genre(models.Model):
 class Song(models.Model):
     title = models.CharField(_('title'), max_length=200)
     lyrics = models.TextField(_('lyrics'), blank=True)
-    length_minutes = models.PositiveIntegerField(
-        _('minutes lentgh'), null=True)
-    length_seconds = models.PositiveIntegerField(
-        _('seconds lentgh'), null=True, validators=[MaxValueValidator(59)])
+    length = models.TimeField(_('song length'), null=True, blank=True)
 
     def __str__(self):
         return self.name
-
-    def get_full_length(self):
-        return '{}:{}'.format(str(self.length_minutes),
-                              str(self.length_seconds))
 
     class Meta:
         verbose_name = _('song')
@@ -50,8 +43,7 @@ class Album(models.Model):
         return self.name
 
     def get_album_length(self):
-        # TODO: Sum of the songs lengths taking
-        # into account the seconds and adding a minute every 60
+        # TODO: Sum of the songs lengths
         pass
 
     class Meta:
