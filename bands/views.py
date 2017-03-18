@@ -1,8 +1,8 @@
 
 from django.contrib.auth.hashers import make_password
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from auth_ex.models import User
 
 from .serilaizers import UserSerializer
@@ -35,4 +35,19 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.request.method == 'POST':
             self.permission_classes = (AllowAny,)
+        if self.request.method == 'GET':
+            self.permission_classes = (IsAdminUser,)
         return super(UserViewSet, self).get_permissions()
+
+
+class UserDetailView(generics.RetrieveAPIView):
+    lookup_field = ('username',)
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        username = self.request.user.username
+        return User.objects.get(username=username)
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = (IsAuthenticated,)

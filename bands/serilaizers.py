@@ -16,9 +16,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                   'last_name', 'avatar', 'managed_band',
                   'followed_bands',
                   'is_staff', 'is_band_manager', 'date_joined')
-
+        lookup_field = 'username'
         extra_kwargs = {
             'password': {'write_only': True},
             'is_staff': {'read_only': True},
             'is_band_manager': {'read_only': True},
+            'url': {'lookup_field': 'username'}
         }
