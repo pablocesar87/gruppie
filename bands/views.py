@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from auth_ex.models import User
 from .models import Band
 
-from .serilaizers import UserSerializer
+from .serializers import UserSerializer
 
 
 class PermissionRenderer(BrowsableAPIRenderer):
@@ -51,5 +51,3 @@ class UserViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return User.objects.all()
         return User.objects.filter(id=user.id)
-
-
