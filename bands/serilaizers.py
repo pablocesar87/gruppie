@@ -21,5 +21,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'password': {'write_only': True},
             'is_staff': {'read_only': True},
             'is_band_manager': {'read_only': True},
-            'url': {'lookup_field': 'username'}
         }
