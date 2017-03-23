@@ -74,7 +74,6 @@ class BandViewSet(viewsets.ModelViewSet):
     queryset = Band.objects.all()
     lookup_field = 'name'
 
-
     def get_permissions(self):
         if self.request.method == 'POST' or self.request.method == 'DELETE':
             self.permission_classes = (IsAdminUser,)

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from auth_ex.models import User
 from .models import Band
 
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     managed_band = serializers.HyperlinkedRelatedField(
         many=False, read_only=True,
