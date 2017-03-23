@@ -34,10 +34,10 @@ class Album(models.Model):
     title = models.CharField(_('title'), max_length=200)
     description = models.TextField(_('description'), blank=True)
     image = StdImageField(_('image'), upload_to=UploadToAutoSlugClassNameDir(
-        populate_from='title'), null=True)
+        populate_from='title'), null=True, blank=True)
     songs = models.ForeignKey(Song, on_delete=models.CASCADE,
                               related_name='album_song',
-                              verbose_name=_('songs'), null=True)
+                              verbose_name=_('songs'), null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -55,13 +55,13 @@ class Band(models.Model):
     name = models.CharField(_('name'), max_length=200)
     description = models.TextField(_('description'), blank=True)
     image = StdImageField(_('image'), upload_to=UploadToAutoSlugClassNameDir(
-        populate_from='name'), null=True)
+        populate_from='name'), null=True, blank=True)
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE,
                               related_name='band_genre',
-                              verbose_name=_('genre'))
+                              verbose_name=_('genre'), null=True, blank=True)
     albums = models.ForeignKey(Album, on_delete=models.CASCADE,
                                related_name='band_albums',
-                               verbose_name=_('albums'))
+                               verbose_name=_('albums'), null=True, blank=True)
 
     def __str__(self):
         return self.name

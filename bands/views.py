@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from auth_ex.models import User
+from .models import Band
 
 from .serilaizers import UserSerializer
 
@@ -50,3 +51,5 @@ class UserViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return User.objects.all()
         return User.objects.filter(id=user.id)
+
+
