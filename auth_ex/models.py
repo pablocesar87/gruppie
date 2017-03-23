@@ -89,14 +89,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     managed_band = models.OneToOneField(
-        Band, null=True, blank=True, related_name='managed_band',
+        Band, null=True, blank=True, related_name='manager',
         on_delete=models.SET_NULL)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     avatar = StdImageField(_('avatar'), upload_to=UploadToAutoSlugClassNameDir(
         populate_from='username'), null=True)
     followed_bands = models.ManyToManyField(
         Band, verbose_name=_('Bands'), blank=True,
-        related_name='followed_bands')
+        related_name='followers')
 
     objects = UserManager()
 

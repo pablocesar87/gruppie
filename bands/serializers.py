@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from auth_ex.models import User
 
+from auth_ex.models import User
+from .models import Band
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     managed_band = serializers.HyperlinkedRelatedField(
@@ -22,3 +23,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             'is_staff': {'read_only': True},
             'is_band_manager': {'read_only': True},
         }
+
+
+class BandSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Band
+        fields = ('id', 'name', 'description', 'image',
+                  'genre', 'albums', )
