@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from auth_ex.models import User
-from .models import Band
+from .models import Band, Genre, Song, Album
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -32,3 +32,25 @@ class BandSerializer(serializers.HyperlinkedModelSerializer):
         model = Band
         fields = ('id', 'name', 'description', 'image',
                   'genre', 'albums', )
+
+
+class GenreSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Genre
+        fields = ('id', 'name', 'description')
+
+
+class SongSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Song
+        fields = ('id', 'title', 'lyrics', 'length')
+
+
+class AlbumSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Album
+        fields = ('id', 'title', 'description', 'image',
+                  'songs')

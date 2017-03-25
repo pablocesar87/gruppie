@@ -4,9 +4,11 @@ from rest_framework import viewsets
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from auth_ex.models import User
-from .models import Band
-
-from .serializers import UserSerializer, BandSerializer
+from .models import Band, Album, Song, Genre
+from .serializers import (
+    UserSerializer, BandSerializer,
+    AlbumSerializer, GenreSerializer, SongSerializer
+)
 
 
 class PermissionUserRenderer(BrowsableAPIRenderer):
@@ -80,3 +82,46 @@ class BandViewSet(viewsets.ModelViewSet):
         if self.request.method == 'GET':
             self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
+
+
+class AlbumViewSet(viewsets.ModelViewSet):
+    renderer_classes = (JSONRenderer, PermissionBandRenderer, )
+    serializer_class = AlbumSerializer
+    queryset = Album.objects.all()
+    lookup_field = 'title'
+
+    def get_permissions(self):
+        if self.request.method == 'POST' or self.request.method == 'DELETE':
+            self.permission_classes = (IsAdminUser,)
+        if self.request.method == 'GET':
+            self.permission_classes = (IsAuthenticated,)
+        return super().get_permissions()
+
+
+class SongViewSet(viewsets.ModelViewSet):
+    renderer_classes = (JSONRenderer, PermissionBandRenderer, )
+    serializer_class = SongSerializer
+    queryset = Song.objects.all()
+    lookup_field = 'title'
+
+    def get_permissions(self):
+        if self.request.method == 'POST' or self.request.method == 'DELETE':
+            self.permission_classes = (IsAdminUser,)
+        if self.request.method == 'GET':
+            self.permission_classes = (IsAuthenticated,)
+        return super().get_permissions()
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    renderer_classes = (JSONRenderer, PermissionBandRenderer, )
+    serializer_class = GenreSerializer
+    queryset = Genre.objects.all()
+    lookup_field = 'name'
+
+    def get_permissions(self):
+        if self.request.method == 'POST' or self.request.method == 'DELETE':
+            self.permission_classes = (IsAdminUser,)
+        if self.request.method == 'GET':
+            self.permission_classes = (IsAuthenticated,)
+        return super().get_permissions()
+
