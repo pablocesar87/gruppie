@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from stdimage.utils import UploadToAutoSlugClassNameDir
 from stdimage.models import StdImageField
+from django.core.urlresolvers import reverse
 
 
 class Genre(models.Model):

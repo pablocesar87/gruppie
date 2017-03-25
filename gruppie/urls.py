@@ -8,6 +8,9 @@ from bands import views as bands_views
 router = routers.DefaultRouter()
 router.register(r'users', bands_views.UserViewSet, base_name='users')
 router.register(r'bands', bands_views.BandViewSet, base_name='bands')
+router.register(r'genres', bands_views.GenreViewSet, base_name='genres')
+router.register(r'albums', bands_views.AlbumViewSet, base_name='albums')
+router.register(r'songs', bands_views.SongViewSet, base_name='songs')
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

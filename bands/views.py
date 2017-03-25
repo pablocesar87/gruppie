@@ -88,7 +88,7 @@ class AlbumViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, PermissionBandRenderer, )
     serializer_class = AlbumSerializer
     queryset = Album.objects.all()
-    lookup_field = 'title'
+
 
     def get_permissions(self):
         if self.request.method == 'POST' or self.request.method == 'DELETE':
@@ -102,7 +102,7 @@ class SongViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, PermissionBandRenderer, )
     serializer_class = SongSerializer
     queryset = Song.objects.all()
-    lookup_field = 'title'
+
 
     def get_permissions(self):
         if self.request.method == 'POST' or self.request.method == 'DELETE':
