@@ -20,21 +20,6 @@ class PermissionUserRenderer(BrowsableAPIRenderer):
             data, accepted_media_type, renderer_context)
         request = renderer_context['request']
         if request.user.is_authenticated():
-            context['display_edit_forms'] = False
-        else:
-            context['display_edit_forms'] = True
-        return context
-
-
-class PermissionBandRenderer(BrowsableAPIRenderer):
-    # Allow to watch create new user form
-    # when user is not logged in
-
-    def get_context(self, data, accepted_media_type, renderer_context):
-        context = super().get_context(
-            data, accepted_media_type, renderer_context)
-        request = renderer_context['request']
-        if request.user.is_staff:
             context['display_edit_forms'] = True
         else:
             context['display_edit_forms'] = False
@@ -70,7 +55,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class BandViewSet(viewsets.ModelViewSet):
-    renderer_classes = (JSONRenderer, PermissionBandRenderer, )
+    renderer_classes = (JSONRenderer, PermissionUserRenderer, )
     serializer_class = BandSerializer
     queryset = Band.objects.all()
 
@@ -83,7 +68,7 @@ class BandViewSet(viewsets.ModelViewSet):
 
 
 class AlbumViewSet(viewsets.ModelViewSet):
-    renderer_classes = (JSONRenderer, PermissionBandRenderer, )
+    renderer_classes = (JSONRenderer, PermissionUserRenderer, )
     serializer_class = AlbumSerializer
     queryset = Album.objects.all()
 
@@ -96,7 +81,7 @@ class AlbumViewSet(viewsets.ModelViewSet):
 
 
 class SongViewSet(viewsets.ModelViewSet):
-    renderer_classes = (JSONRenderer, PermissionBandRenderer, )
+    renderer_classes = (JSONRenderer, PermissionUserRenderer, )
     serializer_class = SongSerializer
     queryset = Song.objects.all()
 
@@ -116,7 +101,7 @@ class SongViewSet(viewsets.ModelViewSet):
 
 
 class GenreViewSet(viewsets.ModelViewSet):
-    renderer_classes = (JSONRenderer, PermissionBandRenderer, )
+    renderer_classes = (JSONRenderer, PermissionUserRenderer, )
     serializer_class = GenreSerializer
     queryset = Genre.objects.all()
 
