@@ -8,10 +8,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     managed_band = serializers.HyperlinkedRelatedField(
         many=False, read_only=True,
-        view_name='managed-band-detail')
+        view_name='bands-detail',
+    )
     followed_bands = serializers.HyperlinkedRelatedField(
         many=True, read_only=True,
-        view_name='followed-bands-detail')
+        view_name='bands-detail'
+    )
 
     class Meta:
         """Meta class User Serializer."""
@@ -32,22 +34,45 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class BandSerializer(serializers.HyperlinkedModelSerializer):
     """Band Serializer."""
 
+    genre = serializers.HyperlinkedRelatedField(
+        many=False,
+        read_only=True,
+        view_name='genres-detail')
+
+    albums = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='albums-detail')
+
+    managed_by = serializers.HyperlinkedRelatedField(
+        many=False,
+        read_only=True,
+        view_name='users-detail',
+        source='manager')
+
     class Meta:
         """Meta class Band Serializer."""
 
         model = Band
         fields = ('id', 'name', 'description', 'image',
-                  'genre', 'albums', )
+                  'genre', 'albums', 'managed_by')
 
 
 class GenreSerializer(serializers.ModelSerializer):
     """Genre Serializer."""
 
+    bands = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='bands-detail',
+        source='bands_in_genre'
+    )
+
     class Meta:
         """Genre Serializer."""
 
         model = Genre
-        fields = ('id', 'name', 'description')
+        fields = ('id', 'name', 'description', 'bands')
 
 
 class SongSerializer(serializers.HyperlinkedModelSerializer):
@@ -72,8 +97,15 @@ class SongSerializer(serializers.HyperlinkedModelSerializer):
 class AlbumSerializer(serializers.ModelSerializer):
     """Album Serializer."""
 
-    songs = serializers.SerializerMethodField()
-    band = serializers.SerializerMethodField()
+    songs = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='songs-detail')
+
+    band = serializers.HyperlinkedRelatedField(
+        many=False,
+        read_only=True,
+        view_name='bands-detail')
 
     class Meta:
         """Meta class Album Serializer."""
@@ -81,11 +113,3 @@ class AlbumSerializer(serializers.ModelSerializer):
         model = Album
         fields = ('id', 'title', 'description', 'image',
                   'songs', 'band')
-
-    def get_songs(self, obj):
-        """Get song method, get only title and id."""
-        return obj.songs.values('title', 'id')
-
-    def get_band(self, obj):
-        """Return a tuple of name and id of the band."""
-        return (obj.band.name, obj.band.id)

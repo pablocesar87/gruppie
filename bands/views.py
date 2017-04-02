@@ -44,7 +44,6 @@ class PermissionBandRenderer(BrowsableAPIRenderer):
 class UserViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, PermissionUserRenderer, )
     serializer_class = UserSerializer
-    lookup_field = 'username'
 
     def perform_create(self, serializer):
         password = make_password(self.request.data['password'])
@@ -74,7 +73,6 @@ class BandViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, PermissionBandRenderer, )
     serializer_class = BandSerializer
     queryset = Band.objects.all()
-    lookup_field = 'name'
 
     def get_permissions(self):
         if self.request.method == 'POST' or self.request.method == 'DELETE':
@@ -89,7 +87,6 @@ class AlbumViewSet(viewsets.ModelViewSet):
     serializer_class = AlbumSerializer
     queryset = Album.objects.all()
 
-
     def get_permissions(self):
         if self.request.method == 'POST' or self.request.method == 'DELETE':
             self.permission_classes = (IsAdminUser,)
@@ -103,7 +100,6 @@ class SongViewSet(viewsets.ModelViewSet):
     serializer_class = SongSerializer
     queryset = Song.objects.all()
 
-
     def get_permissions(self):
         if self.request.method == 'POST' or self.request.method == 'DELETE':
             self.permission_classes = (IsAdminUser,)
@@ -111,12 +107,18 @@ class SongViewSet(viewsets.ModelViewSet):
             self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
 
+    def retrieve(self, request, *args, **kwargs):
+        if request.user.is_band_manager:
+            if request.user.managed_band == self.queryset.first().album.band:
+                import pdb; pdb.set_trace()
+                self.permission_classes = (IsAuthenticated,)
+        return super().retrieve(request, *args, **kwargs)
+
 
 class GenreViewSet(viewsets.ModelViewSet):
     renderer_classes = (JSONRenderer, PermissionBandRenderer, )
     serializer_class = GenreSerializer
     queryset = Genre.objects.all()
-    lookup_field = 'name'
 
     def get_permissions(self):
         if self.request.method == 'POST' or self.request.method == 'DELETE':
