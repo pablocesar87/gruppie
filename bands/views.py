@@ -1,14 +1,29 @@
 
 from django.contrib.auth.hashers import make_password
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from django.utils.translation import ugettext_lazy as _
 from auth_ex.models import User
 from .models import Band, Album, Song, Genre
 from .serializers import (
     UserSerializer, BandSerializer,
     AlbumSerializer, GenreSerializer, SongSerializer
 )
+
+
+class ManagerBandPermission(permissions.BasePermission):
+    message = _('You are not allowed to manage this band.')
+
+    def has_object_permission(self, request, view, obj):
+        managed_band, manager = request.user.get_band_permission()
+        if obj.__class__ == Song:
+            band = obj.album.band
+        elif obj.__class__ == Album:
+            band = obj.band
+        else:
+            band = obj
+        return (band == managed_band and manager)
 
 
 class PermissionUserRenderer(BrowsableAPIRenderer):
@@ -60,10 +75,10 @@ class BandViewSet(viewsets.ModelViewSet):
     queryset = Band.objects.all()
 
     def get_permissions(self):
-        if self.request.method == 'POST' or self.request.method == 'DELETE':
-            self.permission_classes = (IsAdminUser,)
         if self.request.method == 'GET':
             self.permission_classes = (IsAuthenticated,)
+        else:
+            self.permission_classes = (IsAdminUser, ManagerBandPermission)
         return super().get_permissions()
 
 
@@ -73,10 +88,10 @@ class AlbumViewSet(viewsets.ModelViewSet):
     queryset = Album.objects.all()
 
     def get_permissions(self):
-        if self.request.method == 'POST' or self.request.method == 'DELETE':
-            self.permission_classes = (IsAdminUser,)
         if self.request.method == 'GET':
             self.permission_classes = (IsAuthenticated,)
+        else:
+            self.permission_classes = (IsAdminUser, ManagerBandPermission)
         return super().get_permissions()
 
 
@@ -86,18 +101,11 @@ class SongViewSet(viewsets.ModelViewSet):
     queryset = Song.objects.all()
 
     def get_permissions(self):
-        if self.request.method == 'POST' or self.request.method == 'DELETE':
-            self.permission_classes = (IsAdminUser,)
         if self.request.method == 'GET':
             self.permission_classes = (IsAuthenticated,)
+        else:
+            self.permission_classes = (IsAdminUser, ManagerBandPermission)
         return super().get_permissions()
-
-    def retrieve(self, request, *args, **kwargs):
-        if request.user.is_band_manager:
-            if request.user.managed_band == self.queryset.first().album.band:
-                import pdb; pdb.set_trace()
-                self.permission_classes = (IsAuthenticated,)
-        return super().retrieve(request, *args, **kwargs)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -106,9 +114,8 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
 
     def get_permissions(self):
-        if self.request.method == 'POST' or self.request.method == 'DELETE':
-            self.permission_classes = (IsAdminUser,)
         if self.request.method == 'GET':
             self.permission_classes = (IsAuthenticated,)
+        else:
+            self.permission_classes = (IsAdminUser,)
         return super().get_permissions()
-
