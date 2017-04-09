@@ -35,9 +35,9 @@ class PermissionUserRenderer(BrowsableAPIRenderer):
             data, accepted_media_type, renderer_context)
         request = renderer_context['request']
         if request.user.is_authenticated():
-            context['display_edit_forms'] = True
-        else:
             context['display_edit_forms'] = False
+        else:
+            context['display_edit_forms'] = True
         return context
 
 
@@ -75,10 +75,10 @@ class BandViewSet(viewsets.ModelViewSet):
     queryset = Band.objects.all()
 
     def get_permissions(self):
-        if self.request.method == 'GET':
+        if self.request.method == 'GET' or self.request.method == 'PUT':
             self.permission_classes = (IsAuthenticated,)
         else:
-            self.permission_classes = (IsAdminUser, ManagerBandPermission)
+            self.permission_classes = (IsAdminUser, ManagerBandPermission,)
         return super().get_permissions()
 
 

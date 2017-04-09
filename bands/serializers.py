@@ -49,12 +49,29 @@ class BandSerializer(serializers.HyperlinkedModelSerializer):
         view_name='users-detail',
         source='manager')
 
+    following = serializers.SerializerMethodField()
+
     class Meta:
         """Meta class Band Serializer."""
 
         model = Band
         fields = ('id', 'name', 'description', 'image',
-                  'genre', 'albums', 'managed_by')
+                  'genre', 'albums', 'managed_by', 'following')
+
+    def get_following(self, obj):
+        """Return if the current user is following the band."""
+        return obj in self.context.get('request').user.followed_bands.all()
+
+    def update_following(self, obj):
+        """Method for adding or removing band to the current user."""
+        band = obj
+        user = self.context.get('request').user
+        if self.get_following(obj):
+            user.followed_bands.remove(band)
+            user.save()
+        else:
+            user.followed_bands.add(band)
+            user.save()
 
 
 class GenreSerializer(serializers.ModelSerializer):
