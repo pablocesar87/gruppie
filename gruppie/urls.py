@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls',
         namespace='rest_framework')),
+    url(r'^api/bands/(?P<pk>[0-9]+)/follow',
+        bands_views.FolowBandViewSet.as_view(), name='follow')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if 'rosetta' in settings.INSTALLED_APPS:
