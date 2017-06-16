@@ -11,10 +11,14 @@ class UserAdmin(UserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'username',
+                                         'avatar')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                       'groups', 'user_permissions')}),
+                                       'groups', 'user_permissions',
+                                       'is_band_manager')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        (_('Bands information'), {'fields': ('followed_bands',
+                                             'managed_band')})
     )
     add_fieldsets = (
         (None, {
@@ -24,9 +28,11 @@ class UserAdmin(UserAdmin):
     )
     form = UserChangeForm
     add_form = UserCreationForm
-    list_display = ('email', 'first_name', 'last_name', 'is_staff')
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
-    search_fields = ('first_name', 'last_name', 'email')
-    ordering = ('email',)
+    list_display = ('email', 'username', 'first_name', 'last_name', 'is_staff')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups',
+                   'is_band_manager')
+    search_fields = ('first_name', 'last_name', 'email', 'username')
+    list_filter = ('is_band_manager',)
+    ordering = ('username',)
 
 admin.site.register(User, UserAdmin)

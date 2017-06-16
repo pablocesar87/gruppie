@@ -4,6 +4,9 @@ from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
+from stdimage.utils import UploadToAutoSlugClassNameDir
+from stdimage.models import StdImageField
+from bands.models import Band
 
 
 class UserManager(BaseUserManager):
@@ -55,6 +58,14 @@ class User(AbstractBaseUser, PermissionsMixin):
             'unique': _("A user with that email already exists."),
         },
     )
+    username = models.CharField(
+        _('username'),
+        max_length=30,
+        unique=True,
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
@@ -69,12 +80,28 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
+    is_band_manager = models.BooleanField(
+        _('band manager'),
+        default=False,
+        help_text=_(
+            'Designates whether this user is a band manager '
+            'and therefore can realize band actions.'
+        ),
+    )
+    managed_band = models.OneToOneField(
+        Band, null=True, blank=True, related_name='manager',
+        on_delete=models.SET_NULL)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    avatar = StdImageField(_('avatar'), upload_to=UploadToAutoSlugClassNameDir(
+        populate_from='username'), null=True)
+    followed_bands = models.ManyToManyField(
+        Band, verbose_name=_('Bands'), blank=True,
+        related_name='followers')
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
 
     class Meta:
         verbose_name = _('user')
@@ -96,3 +123,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         Sends an email to this User.
         """
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def get_band_permission(self):
+        """
+        Returns a tuple with the managed band and a boolean whether user is
+        a band manager or not.
+        """
+        return (self.managed_band, self.is_band_manager)

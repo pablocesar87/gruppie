@@ -31,7 +31,7 @@ INSTALLED_APPS = (
     # 'mailqueue',
     # 'rosetta',
     # 'widget_tweaks',
-    # 'stdimage',
+    'stdimage',
     # 'sendfile',
     'debug_toolbar',
     'registration',
@@ -39,6 +39,7 @@ INSTALLED_APPS = (
 
     'gruppie',
     'auth_ex',
+    'bands'
 )
 
 AUTH_USER_MODEL = 'auth_ex.User'
@@ -97,6 +98,8 @@ WSGI_APPLICATION = 'gruppie.wsgi.application'
 
 USE_TZ = True
 TIME_ZONE = 'UTC'
+
+TIME_INPUT_FORMATS = ('%M:%S', )
 
 # --- LANGUAGES ---
 USE_I18N = True
