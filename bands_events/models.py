@@ -31,6 +31,7 @@ class TourDates(models.Model):
     date = models.DateTimeField(_('Date of the event'), null=True)
     localization = models.CharField(
         _('Localization of the event'),
+        max_length=256,
         help_text=_('Be as accurate as possible'),
         null=True
     )
@@ -39,7 +40,7 @@ class TourDates(models.Model):
 
 
 class BandEvent(models.Model):
-    name = models.CharField(_('Name of the event'))
+    name = models.CharField(_('Name of the event'), max_length=256)
     type_event = models.CharField(
         _('Type of event'), max_length=14, choices=TYPE_EVENT)
     band = models.ForeignKey(
@@ -63,11 +64,12 @@ class BandEvent(models.Model):
     date = models.DateTimeField(_('Date of the event'), null=True)
     localization = models.CharField(
         _('Localization of the event'),
+        max_length=256,
         help_text=_('Be as accurate as possible if it is a concert.'),
         null=True
     )
 
-    tour_dates = models.ForeignKey(TourDates, blank=True)
+    tour_dates = models.ForeignKey(TourDates, blank=True, null=True)
 
     class Meta:
         verbose_name = _('Band Event')
@@ -77,3 +79,8 @@ class BandEvent(models.Model):
         return _('{}: {} {}'.format(
             self.type_event, self.name, self.band.__str__)
         )
+
+    def save(self):
+        if self.type_event != TOUR:
+            self.tour_dates = None
+        return super().save()
