@@ -11,5 +11,6 @@ services:
       - "8000:8000"
     volumes:
       - .:/code
+      - /Users/prodriguez/projects/django-trench:/code-trench
     depends_on:
       - postgres

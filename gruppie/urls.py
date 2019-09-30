@@ -3,6 +3,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf.urls.static import static
 from rest_framework import routers
+from rest_framework_jwt.views import ObtainJSONWebToken
 from bands import views as bands_views
 
 router = routers.DefaultRouter()
@@ -15,8 +16,11 @@ router.register(r'songs', bands_views.SongViewSet, base_name='songs')
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls',
-        namespace='rest_framework')),
+    url(
+        r'^api/accounts/obtain_token/',
+        ObtainJSONWebToken.as_view(),
+    ),
+    url(r'^api/accounts/', include('trench.urls')),
     url(r'^api/bands/(?P<pk>[0-9]+)/follow',
         bands_views.FolowBandViewSet.as_view(), name='follow')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

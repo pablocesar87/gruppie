@@ -36,11 +36,13 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'registration',
     'rest_framework',
+    'corsheaders',
 
     'gruppie',
     'auth_ex',
     'bands',
     'bands_events',
+    'trench',
 )
 
 AUTH_USER_MODEL = 'auth_ex.User'
@@ -84,6 +86,7 @@ TEMPLATES = [
 MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -127,6 +130,17 @@ DATABASES = {
 }
 
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': 'localhost',
+        'NAME': 'gruppie',
+        'PASSWORD': 'postgres',
+        'PORT': '5432',
+        'USER': 'postgres',
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
@@ -167,11 +181,14 @@ INTERNAL_IPS = ['127.0.0.1']
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
         'rest_framework.permissions.AllowAny',
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+        # 'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
 }
 
 # --- SENTRY ---
@@ -194,3 +211,46 @@ REST_FRAMEWORK = {
 #     'propagate': True,
 #     'formatter': 'simple',
 # }
+
+TRENCH_AUTH = {
+    # 'BACKUP_CODES_CHARACTERS': 'dasdad,'
+    # 'MFA_METHODS': {
+    #     'sms': {
+    #         'VERBOSE_NAME': _('sms'),
+    #         'VALIDITY_PERIOD': 60 * 10,
+    #         # 'HANDLER': 'trench.handlers.sms_handler',
+    #         'SOURCE_FIELD': 'phone_number',
+    #     },
+    # }
+}
+
+
+# CORS
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = (
+    'localhost:4200',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
